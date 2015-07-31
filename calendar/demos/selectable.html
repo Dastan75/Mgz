@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='../fullcalendar.css' rel='stylesheet' />
+<link href='../fullcalendar.print.css' rel='stylesheet' media='print' />
+<script src='../lib/moment.min.js'></script>
+<script src='../lib/jquery.min.js'></script>
+<script src='../fullcalendar.min.js'></script>
+<script src='../lang-all.js'></script>
+<script src='jquery-ui-1.11.4/jquery-ui.js'></script>
+<link rel="stylesheet" href="jquery-ui-1.11.4/themes/smoothness/jquery-ui.css">
+<style>
+
+
+</style>
+
+<script>
+
+
+	$(document).ready(function() {
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1;
+		var yyyy = today.getFullYear();
+
+		today = mm+'/'+dd+'/'+yyyy;	
+		$('#calendar').fullCalendar({
+			lang: 'fr',
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek'
+			},			
+			eventRender: function (event, element) {
+				element.attr('href', 'javascript:void(0);');
+				element.click(function() {
+					$("#eventContent").dialog({ 
+						title: event.title,
+						buttons: {
+							Ok: function() {
+								$( this ).dialog( "close" );
+							}
+						}
+					});
+				});
+			},
+			defaultDate: today,
+			selectable: false,
+			selectHelper: true,
+			select: function(start, end) {
+				var title = prompt('Event Title:');
+				var eventData;
+				if (title) {
+					eventData = {
+						title: title,
+						start: start,
+						end: end
+					};
+					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+				}
+				$('#calendar').fullCalendar('unselect');
+			},
+			editable: false,
+			eventLimit: 8, // allow "more" link when too many events
+			events: [
+				{
+					id: 999,
+					title: 'Reservation',
+					start: '2015-07-29T10:00:00',
+					end: '2015-07-29T11:00:00',
+					backgroundColor : "#831919",
+					data: 1
+				},
+				{
+					id: 999,
+					title: 'Reservation',
+					start: '2015-07-28T16:00:00',
+					end: '2015-07-28T17:00:00'
+				}
+			]
+		});
+		
+	});
+
+</script>
+<style>
+
+	body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+	}
+
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+</style>
+</head>
+<body>
+
+	<div id='calendar'></div>
+
+<div id="eventContent" title="Event Details" style="display:none;">
+	<form id="payment" action="" method="POST">
+		<script
+			src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+			data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+			data-amount="2000"
+			data-name="Paiement par CB"
+			data-description="Prix : 20€"
+			data-image="/128x128.png">
+		</script>
+	</form>
+</div>
+	
+</body>
+</html>
