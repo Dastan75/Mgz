@@ -10,14 +10,19 @@
 <script>
 
 	$(document).ready(function() {
-	
+			var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1;
+		var yyyy = today.getFullYear();
+
+		today = mm+'/'+dd+'/'+yyyy;	
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
-			defaultDate: '2015-02-12',
+			defaultDate: today,
 			editable: true,
 			eventLimit: true, // allow "more" link when too many events
 			events: {

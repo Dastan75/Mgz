@@ -9,6 +9,10 @@
 	text-align: left;
 }
 
+.fc-view-month .fc-event-time{
+    display : none;
+}
+
 .fc-rtl {
 	text-align: right;
 }
@@ -25,6 +29,8 @@ body .fc { /* extra precedence to overcome jqui */
 #payment{
 z-index: 1001;
 }
+
+
 
 /* Colors
 --------------------------------------------------------------------------------------------------*/
