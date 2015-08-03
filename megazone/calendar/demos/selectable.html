@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='../fullcalendar.css' rel='stylesheet' />
+<link href='../fullcalendar.print.css' rel='stylesheet' media='print' />
+<script src='../lib/moment.min.js'></script>
+<script src='../lib/jquery.min.js'></script>
+<script src='../fullcalendar.min.js'></script>
+<script src='../lang-all.js'></script>
+<script src='jquery-ui-1.11.4/jquery-ui.js'></script>
+<link rel="stylesheet" href="jquery-ui-1.11.4/themes/smoothness/jquery-ui.css">
+<style>
+
+
+</style>
+
+<script>
+
+function completeAndRedirect(){
+	$.getJSON("./json/events.json", function(result){
+            $.each(result, function(i, field){
+                if (field.id == toto){
+                	field.reserved = 1;
+					//Serialize as JSON and Write it to a file
+					fs.writeFileSync("./json/events.json", JSON.stringify(result));
+                }
+            });
+        });
+    location.href='';
+}
+
+	$(document).ready(function() {
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1;
+		var yyyy = today.getFullYear();
+
+		today = mm+'/'+dd+'/'+yyyy;	
+		$('#calendar').fullCalendar({
+			lang: 'fr',
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek'
+			},
+			eventRender: function (event, element) {
+				element.attr('href', 'javascript:void(0);');
+				//element.find('.fc-title').replaceWith ("Dispo : " + (event.slot_max - event.slot_used) + " places");
+				var d = new Date(event.start);
+				var n = d.getHours();
+				var d2 = new Date(event.end);
+				var n2 = d2.getHours();
+				element.find('.fc-time').replaceWith(n + "h" + "-" + n2 + "h" + " :")
+				element.find('.fc-title').replaceWith(function(){
+					if (event.reserved == 1)
+						return "Reservée"
+					else
+						return "Libre"
+				});
+				if (event.reserved == 0)
+				{
+					element.click(function() {
+						toto = event.id;
+						$("#eventContent").dialog({ 
+							title: event.title,
+							buttons: {
+							Ok: function() {
+								$( this ).dialog( "close" );
+								}
+							}
+						});
+					});
+				}
+			},
+			defaultDate: today,
+			selectable: false,
+			selectHelper: true,
+			editable: false,
+			eventLimit: false, // allow "more" link when too many events
+			events: {
+				url: 'php/get-events.php',
+				cache: true,
+				error: function() {
+					$('#script-warning').show();
+				}
+			},
+		});
+	});
+
+</script>
+<style>
+
+	body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+	}
+
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+</style>
+</head>
+<body>
+
+	<div id='calendar'></div>
+
+<div id="eventContent" title="Event Details" style="display:none;">
+	<form id="payment" action="javascript:completeAndRedirect();" method="POST">
+		<script
+			src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+			data-key="pk_test_tP1MelDd0yYLyMayJmPv5Xde"
+			data-amount="2000"
+			data-name="Paiement en ligne"
+			data-description="Prix : 20€"
+			data-image="./128x128.png">
+		</script>
+	</form>
+</div>
+	
+</body>
+</html>
